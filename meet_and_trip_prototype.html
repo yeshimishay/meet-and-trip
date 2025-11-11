@@ -1,0 +1,280 @@
+
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Meet & Trip — Prototype interactif</title>
+<style>
+  :root{
+    --bg:#0f1113;
+    --card:#151719;
+    --gold:#c9a65f;
+    --muted:#9aa0a6;
+    --accent:#e6d7b0;
+    --radius:18px;
+    --glass: rgba(255,255,255,0.03);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#0b0c0d 0%, #0f1113 100%);color:var(--accent);-webkit-font-smoothing:antialiased;}
+  .phone{width:390px;height:844px;margin:28px auto;border-radius:42px;background:var(--bg);box-shadow:0 20px 60px rgba(2,6,10,0.7);overflow:hidden;border:8px solid rgba(255,255,255,0.02);position:relative;}
+  header{padding:28px 24px 8px;}
+  .logo{font-weight:700;letter-spacing:2px;color:var(--gold);text-align:center;font-size:14px;}
+  .container{padding:10px 24px;}
+  .hero-title{font-size:36px;line-height:1.02;margin:14px 0 8px;color:var(--accent);font-weight:600;}
+  .hero-sub{color:var(--muted);font-size:14px;margin-bottom:18px;}
+  .cta{display:inline-block;background:transparent;border:1px solid rgba(201,166,95,0.18);padding:12px 18px;border-radius:12px;color:var(--gold);font-weight:600;cursor:pointer;backdrop-filter: blur(4px);}
+  .icons{display:flex;gap:16px;margin-top:18px;align-items:center;justify-content:center;}
+  .icon{display:flex;flex-direction:column;align-items:center;font-size:12px;color:var(--muted);}
+  .icon svg{width:28px;height:28px;stroke:var(--gold);stroke-width:1.4;fill:none;opacity:0.9;}
+  /* bottom nav */
+  .nav{position:absolute;left:0;right:0;bottom:18px;display:flex;gap:18px;padding:12px 24px;justify-content:space-between;align-items:center;}
+  .nav button{flex:1;background:var(--card);border-radius:12px;padding:12px;border:none;color:var(--muted);font-weight:600;cursor:pointer}
+  /* screens */
+  .screen{display:none;height:100%;overflow:auto;padding-bottom:90px;}
+  .screen.active{display:block;}
+  /* Profile style */
+  .profile-header{display:flex;flex-direction:column;align-items:center;padding-top:10px;}
+  .avatar{width:110px;height:110px;border-radius:999px;background:linear-gradient(135deg,#2b2f31,#191b1c);display:flex;align-items:center;justify-content:center;font-size:36px;color:var(--gold);border:4px solid rgba(201,166,95,0.12);box-shadow:0 8px 30px rgba(2,6,10,0.6);}
+  .name{font-size:28px;margin-top:12px;color:var(--gold);font-weight:600;}
+  .sub{color:var(--muted);margin-top:6px;font-size:13px;}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:14px;margin:18px 18px;color:var(--muted);}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+  .tag{background:rgba(255,255,255,0.02);padding:8px 12px;border-radius:999px;font-size:13px;color:var(--gold);border:1px solid rgba(201,166,95,0.08);}
+  .edit-btn{display:block;margin:18px;padding:12px;border-radius:12px;background:transparent;border:1px solid rgba(201,166,95,0.12);color:var(--gold);font-weight:700;text-align:center;cursor:pointer;}
+  /* discover cards */
+  .card-swipe{height:420px;margin:18px;border-radius:22px;background:linear-gradient(180deg,#121315,#17191a);display:flex;flex-direction:column;padding:18px;align-items:flex-start;justify-content:space-between;}
+  .dest{font-size:22px;font-weight:700;color:var(--gold);}
+  .bio{color:var(--muted);margin-top:6px;}
+  .swipe-actions{display:flex;gap:12px;width:100%;justify-content:center;margin-top:12px;}
+  .bubble{width:56px;height:56px;border-radius:999px;background:var(--card);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.02);cursor:pointer;}
+  .bubble svg{stroke:var(--gold);width:26px;height:26px;}
+  /* form */
+  .form{display:flex;flex-direction:column;gap:10px;padding:12px;}
+  input,select,textarea{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:12px;border-radius:10px;color:var(--accent);outline:none;font-size:14px;}
+  textarea{min-height:80px;resize:vertical;}
+  .submit{background:var(--gold);color:#0b0c0d;padding:12px;border-radius:12px;border:none;font-weight:700;cursor:pointer;}
+  /* nice scrollbar */
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.03);border-radius:8px;}
+  /* small */
+  @media(max-width:420px){.phone{width:360px;height:780px}}
+</style>
+</head>
+<body>
+<div class="phone" role="application">
+  <div id="home" class="screen active">
+    <header><div class="logo">MEET &amp; TRIP</div></header>
+    <div class="container">
+      <div class="hero-title">Rencontre ton<br>prochain partenaire<br>de voyage</div>
+      <div class="hero-sub">Trouve et connecte-toi avec d'autres voyageurs qui vont vers les mêmes destinations que toi.</div>
+      <button class="cta" onclick="go('discover')">Je découvre</button>
+      <div class="icons">
+        <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"></path></svg><div>Rencontre</div></div>
+        <div class="icon"><svg viewBox="0 0 24 24"><path d="M2 12h20M12 2l8 10-8 10-8-10 8-10z"></path></svg><div>Voyage</div></div>
+        <div class="icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"></path></svg><div>Partage</div></div>
+      </div>
+    </div>
+    <div class="nav">
+      <button onclick="go('home')">Accueil</button>
+      <button onclick="go('discover')">Découvrir</button>
+      <button onclick="go('profile')">Mon profil</button>
+    </div>
+  </div>
+
+  <div id="discover" class="screen">
+    <header><div class="logo">MEET &amp; TRIP</div></header>
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="color:var(--muted)">Explorer</div>
+        <div style="color:var(--gold);font-weight:700">Matches</div>
+      </div>
+      <div class="card-swipe" id="cardArea">
+        <div>
+          <div class="dest" id="cardDest">Tokyo — 5 j</div>
+          <div class="bio" id="cardBio">Solo traveller, loves sushi, temples and late-night karaoke.</div>
+        </div>
+        <div style="width:100%">
+          <div style="display:flex;gap:10px;align-items:center;margin-top:12px">
+            <div style="flex:1;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:10px;border-radius:12px;color:var(--muted)">Dates: Juil 10 - Juil 16</div>
+            <div style="margin-left:8px;color:var(--muted)">Budget: €700</div>
+          </div>
+          <div class="swipe-actions">
+            <div class="bubble" onclick="prevCard()"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"></path></svg></div>
+            <div class="bubble" onclick="likeCard()"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.35-9-7.35C0 10.5 3 6 7 6c2.1 0 3 1.24 5 3.2C14 7.24 14.9 6 17 6c4 0 7 4.5 6 7.65C19 16.65 12 21 12 21z"></path></svg></div>
+            <div class="bubble" onclick="nextCard()"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:18px;color:var(--muted);">Créer un voyage</div>
+      <div class="card" style="margin-top:8px;">
+        <form id="tripForm" class="form" onsubmit="createTrip(event)">
+          <input id="tTitle" placeholder="Titre du voyage (ex: Road trip Portugal)" required />
+          <input id="tDest" placeholder="Destination (ex: Lisbonne)" required />
+          <input id="tDates" placeholder="Dates (ex: 2025-06-01 → 2025-06-10)" required />
+          <input id="tBudget" placeholder="Budget estimé (€)" required />
+          <button class="submit" type="submit">Publier</button>
+        </form>
+      </div>
+    </div>
+    <div class="nav">
+      <button onclick="go('home')">Accueil</button>
+      <button onclick="go('discover')">Découvrir</button>
+      <button onclick="go('profile')">Mon profil</button>
+    </div>
+  </div>
+
+  <div id="profile" class="screen">
+    <header><div class="logo">MEET &amp; TRIP</div></header>
+    <div class="container">
+      <div class="profile-header">
+        <div class="avatar" id="avatarEl">EM</div>
+        <div class="name" id="pName">Emma</div>
+        <div class="sub" id="pLocation">Paris, France • 29</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-weight:700;color:var(--gold)">Destinations préférées</div>
+          <div style="color:var(--muted)">Dates</div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:10px;align-items:center;">
+          <div style="flex:1;color:var(--muted)" id="pDests">Bali, Japon, Grèce</div>
+          <div style="color:var(--muted)" id="pDates">Juil 2024 - Déc 2024</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;color:var(--muted)">Type de voyage</div>
+      <div style="margin-top:6px;color:var(--gold);font-weight:600" id="pType">Solo</div>
+      <div style="margin-top:12px;color:var(--muted)">Intérêts</div>
+      <div class="tags" id="pTags">
+        <div class="tag">Plage</div>
+        <div class="tag">Randonnée</div>
+        <div class="tag">Culture</div>
+      </div>
+      <div style="margin-top:12px;color:var(--muted)">À propos</div>
+      <div style="margin-top:8px;color:var(--muted)" id="pAbout">Passionnée de voyages, en quête de nouvelles aventures et de belles rencontres !</div>
+
+      <button class="edit-btn" onclick="openEdit()">Modifier le profil</button>
+    </div>
+    <div class="nav">
+      <button onclick="go('home')">Accueil</button>
+      <button onclick="go('discover')">Découvrir</button>
+      <button onclick="go('profile')">Mon profil</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit modal (simple) -->
+<div id="modal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,10,0.6);">
+  <div style="width:360px;background:var(--card);border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.03);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <strong style="color:var(--gold)">Modifier le profil</strong>
+      <button onclick="closeEdit()" style="background:transparent;border:none;color:var(--muted);font-weight:700;cursor:pointer">✕</button>
+    </div>
+    <form id="editForm" class="form" onsubmit="saveProfile(event)">
+      <input id="eName" placeholder="Prénom" required />
+      <input id="eAge" placeholder="Âge" type="number" required />
+      <input id="eLocation" placeholder="Ville, pays" required />
+      <input id="eDests" placeholder="Destinations (séparées par ,)" />
+      <input id="eDates" placeholder="Dates (ex: Juil 2025 - Août 2025)" />
+      <input id="eType" placeholder="Solo / Duo / Groupe" />
+      <textarea id="eAbout" placeholder="À propos"></textarea>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button type="button" onclick="closeEdit()" style="background:transparent;border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:10px;color:var(--muted);">Annuler</button>
+        <button class="submit" type="submit">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// Simple SPA navigation
+function go(screen){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screen).classList.add('active');
+  // small UX: scroll top
+  document.getElementById(screen).scrollTop = 0;
+}
+
+// Mock card data
+const cards = [
+  {dest:'Tokyo — 5 j', bio:'Solo traveller, loves sushi, temples and late-night karaoke.', dates:'Juil 10 - Juil 16', budget:700},
+  {dest:'Lisbonne — 7 j', bio:'Food lover, surf beginner, looking for company for coastal trip.', dates:'Sep 05 - Sep 12', budget:650},
+  {dest:'Reykjavik — 6 j', bio:'Nature addict, aim to chase northern lights and hikes.', dates:'Nov 10 - Nov 16', budget:1200},
+];
+let idx=0;
+function renderCard(){
+  const c=cards[idx];
+  document.getElementById('cardDest').innerText = c.dest;
+  document.getElementById('cardBio').innerText = c.bio;
+}
+function nextCard(){ idx = (idx+1)%cards.length; renderCard(); }
+function prevCard(){ idx = (idx-1+cards.length)%cards.length; renderCard(); }
+function likeCard(){ alert('Tu as aimé ce profil — ouvre le chat pour commencer à discuter !'); nextCard(); }
+renderCard();
+
+// Trip create
+function createTrip(e){
+  e.preventDefault();
+  const t = {title:document.getElementById('tTitle').value, dest:document.getElementById('tDest').value, dates:document.getElementById('tDates').value, budget:document.getElementById('tBudget').value};
+  alert('Voyage publié: ' + t.title + ' → ' + t.dest);
+  document.getElementById('tripForm').reset();
+}
+
+// Profile edit modal
+function openEdit(){
+  // populate fields with current profile
+  document.getElementById('eName').value = localStorage.getItem('name') || 'Emma';
+  document.getElementById('eAge').value = localStorage.getItem('age') || '29';
+  document.getElementById('eLocation').value = localStorage.getItem('location') || 'Paris, France';
+  document.getElementById('eDests').value = localStorage.getItem('dests') || 'Bali, Japon, Grèce';
+  document.getElementById('eDates').value = localStorage.getItem('dates') || 'Juil 2024 - Déc 2024';
+  document.getElementById('eType').value = localStorage.getItem('type') || 'Solo';
+  document.getElementById('eAbout').value = localStorage.getItem('about') || 'Passionnée de voyages, en quête de nouvelles aventures et de belles rencontres !';
+  document.getElementById('modal').style.display='flex';
+}
+function closeEdit(){ document.getElementById('modal').style.display='none'; }
+function saveProfile(e){
+  e.preventDefault();
+  const name=document.getElementById('eName').value;
+  const age=document.getElementById('eAge').value;
+  const loc=document.getElementById('eLocation').value;
+  const dests=document.getElementById('eDests').value;
+  const dates=document.getElementById('eDates').value;
+  const type=document.getElementById('eType').value;
+  const about=document.getElementById('eAbout').value;
+  // persist
+  localStorage.setItem('name',name); localStorage.setItem('age',age); localStorage.setItem('location',loc); localStorage.setItem('dests',dests); localStorage.setItem('dates',dates); localStorage.setItem('type',type); localStorage.setItem('about',about);
+  applyProfile();
+  closeEdit();
+  alert('Profil mis à jour.');
+}
+function applyProfile(){
+  const name=localStorage.getItem('name')||'Emma';
+  const age=localStorage.getItem('age')||'29';
+  const loc=localStorage.getItem('location')||'Paris, France';
+  const dests=localStorage.getItem('dests')||'Bali, Japon, Grèce';
+  const dates=localStorage.getItem('dates')||'Juil 2024 - Déc 2024';
+  const type=localStorage.getItem('type')||'Solo';
+  const about=localStorage.getItem('about')||'Passionnée de voyages, en quête de nouvelles aventures et de belles rencontres !';
+  document.getElementById('pName').innerText = name;
+  document.getElementById('pLocation').innerText = loc + ' • ' + age;
+  document.getElementById('pDests').innerText = dests;
+  document.getElementById('pDates').innerText = dates;
+  document.getElementById('pType').innerText = type;
+  document.getElementById('pAbout').innerText = about;
+  // avatar initials
+  const initials = name.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase();
+  document.getElementById('avatarEl').innerText = initials;
+  // tags from dests (sample)
+  const tags = dests.split(',').slice(0,4).map(t=>t.trim());
+  const container = document.getElementById('pTags');
+  container.innerHTML = '';
+  tags.forEach(t=>{
+    const el=document.createElement('div'); el.className='tag'; el.innerText=t; container.appendChild(el);
+  });
+}
+applyProfile();
+</script>
+</body>
+</html>
