@@ -6,50 +6,49 @@
 <title>SkyTrip — Prototype interactif</title>
 <style>
 :root{
-  --bg:#a0d8f1; /* bleu ciel */
-  --card:#ffffff33;
+  --bg:#0f0f0f; /* fond sombre initial */
+  --card:#151719;
   --gold:#c9a65f;
-  --muted:#555;
-  --accent:#222;
+  --muted:#9aa0a6;
+  --accent:#e6d7b0;
   --radius:18px;
   --glass: rgba(255,255,255,0.03);
   font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
 }
-html,body{height:100%;margin:0;background:linear-gradient(135deg,#a0d8f1,#87ceeb);color:var(--accent);-webkit-font-smoothing:antialiased;}
-.phone{width:390px;height:844px;margin:28px auto;border-radius:42px;background:var(--bg);box-shadow:0 20px 60px rgba(2,6,10,0.1);overflow:hidden;border:0;position:relative;}
+html,body{height:100%;margin:0;background:linear-gradient(135deg,#0f0f0f,#1a1a1a);color:var(--accent);-webkit-font-smoothing:antialiased;}
+.phone{width:390px;height:844px;margin:28px auto;border-radius:42px;background:var(--bg);box-shadow:0 20px 60px rgba(2,6,10,0.7);overflow:hidden;border:8px solid rgba(255,255,255,0.02);position:relative;}
 header{padding:28px 24px 8px;}
 .logo{font-weight:700;letter-spacing:2px;color:var(--gold);text-align:center;font-size:14px;}
 .container{padding:10px 24px;}
 .hero-title{font-size:36px;line-height:1.02;margin:14px 0 8px;color:var(--accent);font-weight:600;}
 .hero-sub{color:var(--muted);font-size:14px;margin-bottom:18px;}
-.cta{display:inline-block;background:transparent;border:1px solid rgba(0,0,0,0.1);padding:12px 18px;border-radius:12px;color:var(--accent);font-weight:600;cursor:pointer;}
+.cta{display:inline-block;background:transparent;border:1px solid rgba(201,166,95,0.18);padding:12px 18px;border-radius:12px;color:var(--gold);font-weight:600;cursor:pointer;backdrop-filter: blur(4px);}
 .icons{display:flex;gap:16px;margin-top:18px;align-items:center;justify-content:center;}
 .icon{display:flex;flex-direction:column;align-items:center;font-size:12px;color:var(--muted);}
-.icon svg{width:28px;height:28px;stroke:var(--gold);stroke-width:1.4;fill:none;opacity:0.9;}
 .nav{position:absolute;left:0;right:0;bottom:18px;display:flex;gap:18px;padding:12px 24px;justify-content:space-between;align-items:center;}
 .nav button{flex:1;background:var(--card);border-radius:12px;padding:12px;border:none;color:var(--muted);font-weight:600;cursor:pointer}
 .screen{display:none;height:100%;overflow:auto;padding-bottom:90px;}
 .screen.active{display:block;}
 .profile-header{display:flex;flex-direction:column;align-items:center;padding-top:10px;}
-.avatar{width:110px;height:110px;border-radius:999px;background:linear-gradient(135deg,#87ceeb,#a0d8f1);display:flex;align-items:center;justify-content:center;font-size:36px;color:var(--gold);border:4px solid rgba(201,166,95,0.12);box-shadow:0 8px 30px rgba(2,6,10,0.1);}
+.avatar{width:110px;height:110px;border-radius:999px;background:linear-gradient(135deg,#2b2f31,#191b1c);display:flex;align-items:center;justify-content:center;font-size:36px;color:var(--gold);border:4px solid rgba(201,166,95,0.12);box-shadow:0 8px 30px rgba(2,6,10,0.6);}
 .name{font-size:28px;margin-top:12px;color:var(--gold);font-weight:600;}
 .sub{color:var(--muted);margin-top:6px;font-size:13px;}
-.card{background:linear-gradient(180deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2));padding:14px;border-radius:14px;margin:18px 18px;color:var(--muted);}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:14px;margin:18px 18px;color:var(--muted);}
 .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
-.tag{background:rgba(255,255,255,0.3);padding:8px 12px;border-radius:999px;font-size:13px;color:var(--gold);border:1px solid rgba(201,166,95,0.08);}
+.tag{background:rgba(255,255,255,0.02);padding:8px 12px;border-radius:999px;font-size:13px;color:var(--gold);border:1px solid rgba(201,166,95,0.08);}
 .edit-btn{display:block;margin:18px;padding:12px;border-radius:12px;background:transparent;border:1px solid rgba(201,166,95,0.12);color:var(--gold);font-weight:700;text-align:center;cursor:pointer;}
-.card-swipe{height:420px;margin:18px;border-radius:22px;background:linear-gradient(180deg,#87ceeb,#a0d8f1);display:flex;flex-direction:column;padding:18px;align-items:flex-start;justify-content:space-between;}
+.card-swipe{height:420px;margin:18px;border-radius:22px;background:linear-gradient(180deg,#121315,#17191a);display:flex;flex-direction:column;padding:18px;align-items:flex-start;justify-content:space-between;}
 .dest{font-size:22px;font-weight:700;color:var(--gold);}
 .bio{color:var(--muted);margin-top:6px;}
 .swipe-actions{display:flex;gap:12px;width:100%;justify-content:center;margin-top:12px;}
-.bubble{width:56px;height:56px;border-radius:999px;background:var(--card);display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,0,0,0.05);cursor:pointer;}
+.bubble{width:56px;height:56px;border-radius:999px;background:var(--card);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.02);cursor:pointer;}
 .bubble svg{stroke:var(--gold);width:26px;height:26px;}
 .form{display:flex;flex-direction:column;gap:10px;padding:12px;}
-input,select,textarea{background:transparent;border:1px solid rgba(0,0,0,0.1);padding:12px;border-radius:10px;color:var(--accent);outline:none;font-size:14px;}
+input,select,textarea{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:12px;border-radius:10px;color:var(--accent);outline:none;font-size:14px;}
 textarea{min-height:80px;resize:vertical;}
 .submit{background:var(--gold);color:#0b0c0d;padding:12px;border-radius:12px;border:none;font-weight:700;cursor:pointer;}
 ::-webkit-scrollbar{width:8px;height:8px;}
-::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.1);border-radius:8px;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.03);border-radius:8px;}
 @media(max-width:420px){.phone{width:360px;height:780px}}
 
 /* login screen */
@@ -64,7 +63,7 @@ textarea{min-height:80px;resize:vertical;}
   font-weight:600;
   cursor:pointer;
   background:white; /* tous blancs */
-  color:black;        /* texte noir */
+  color:black;
   border:none;
 }
 </style>
